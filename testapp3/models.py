@@ -29,7 +29,7 @@ class Service(models.Model):
     price = models.CharField(max_length=10)
     description = models.TextField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='categories')
-    duration = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(12)])
+    duration = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
     master = models.ForeignKey(Master, on_delete=models.CASCADE, related_name='services')
 
     def __str__(self):
