@@ -40,17 +40,16 @@ class Client(models.Model):
     client_telegram_id = models.CharField(max_length=15)
     client_telegram_nickname = models.CharField(max_length=50, blank=True, null=True)
     client_phone_number = models.CharField(max_length=14, blank=True, null=True)
-    master = models.ManyToManyField(Master, related_name='clients')
-    #Добавить поле many to many мастеров сюда , мастерв , релейтед клаинтс
+    master = models.ManyToManyField(Master, related_name='clients', blank=True)
 
     def __str__(self):
         return self.client_telegram_id
 
 
 class Order(models.Model):
-    client = models.ManyToManyField(Client, related_name='client')
-    master = models.ManyToManyField(Master,  related_name='masters')
-    service = models.ManyToManyField(Service, related_name='publicservice')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client', default=1)#переделать на forienkey(Client)
+    master = models.ForeignKey(Master, on_delete=models.CASCADE,  related_name='masters', default=1)#переделать на forienkey(Master)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='publicservice', default=1)#переделать на forienkey(Service)
 
     def __str__(self):
         return f"Заказ №{self.id}"
@@ -58,7 +57,7 @@ class Order(models.Model):
 
 class Schedule(models.Model):
     master = models.ForeignKey(Master, on_delete=models.CASCADE, related_name='schedule')
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True, blank=True, related_name='order')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, related_name='order')#переделать на forienkey(Order)
     datetime_slot = models.DateTimeField()
 
     def __str__(self):
