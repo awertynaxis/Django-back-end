@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
+    #myown
+    'testapp3',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +81,7 @@ WSGI_APPLICATION = 'Django_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'NAME': 'testdatabase',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',
