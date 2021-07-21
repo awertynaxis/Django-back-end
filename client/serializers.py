@@ -8,3 +8,5 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = '__all__'
         read_only_field = ('id',)
+        # necessary for ClientMasterListView data parsing
+        depth = 1
