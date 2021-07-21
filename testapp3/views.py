@@ -10,11 +10,14 @@ from .serializers import ClientSerializer, MasterSerializer
 class ClientView(generics.ListCreateAPIView):
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['master__master_telegram_id', 'client_telegram_id']
 
 class MasterView(generics.ListCreateAPIView):
     serializer_class = MasterSerializer
     queryset = Master.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['clients__client_telegram_id']
 
 
 list_client_view = ClientView.as_view()

@@ -47,9 +47,9 @@ class Client(models.Model):
 
 
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client', default=1)#переделать на forienkey(Client)
-    master = models.ForeignKey(Master, on_delete=models.CASCADE,  related_name='masters', default=1)#переделать на forienkey(Master)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='publicservice', default=1)#переделать на forienkey(Service)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client')
+    master = models.ForeignKey(Master, on_delete=models.CASCADE,  related_name='masters')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='publicservice')
 
     def __str__(self):
         return f"Заказ №{self.id}"
@@ -57,7 +57,7 @@ class Order(models.Model):
 
 class Schedule(models.Model):
     master = models.ForeignKey(Master, on_delete=models.CASCADE, related_name='schedule')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, related_name='order')#переделать на forienkey(Order)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, related_name='order')
     datetime_slot = models.DateTimeField()
 
     def __str__(self):
