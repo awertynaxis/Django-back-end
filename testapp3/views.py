@@ -13,6 +13,7 @@ class ClientView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['master__master_telegram_id', 'client_telegram_id']
 
+
 class MasterView(generics.ListCreateAPIView):
     serializer_class = MasterSerializer
     queryset = Master.objects.all()
