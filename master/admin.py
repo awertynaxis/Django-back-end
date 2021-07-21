@@ -1,14 +1,16 @@
 from django.contrib import admin
 
-# Register your models here.
-from .models import Master, Client, Category, Service, Order, Schedule
+from client.models import Client
+from master.models import Master, Category, Service
+from order.models import Order
+from schedule.models import Schedule
 
 
 @admin.register(Master)
 class Master(admin.ModelAdmin):
-    fields = ('username', 'first_name', 'last_name',
+    fields = ('nickname', 'first_name', 'last_name',
               'instagram', 'master_telegram_id', 'master_telegram_nickname',
-              'master_phone_number', 'address',)
+              'master_phone_number', 'address', 'user')
 
 
 @admin.register(Category)

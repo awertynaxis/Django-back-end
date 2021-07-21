@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     #myown
-    'testapp3',
+    'master',
+    'order',
+    'client',
+    'schedule'
 ]
 
 MIDDLEWARE = [

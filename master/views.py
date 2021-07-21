@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
-from .models import Client, Master
-from .serializers import ClientSerializer, MasterSerializer
-# Create your views here.
+from client.models import Client
+from master.models import Master
+from master.serializers import ClientSerializer, MasterSerializer
 
 
 class ClientView(generics.ListCreateAPIView):
@@ -23,4 +23,3 @@ class MasterView(generics.ListCreateAPIView):
 
 list_client_view = ClientView.as_view()
 list_master_view = MasterView.as_view()
-
