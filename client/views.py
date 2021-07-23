@@ -5,9 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from client.models import Client
-from client.serializers import ClientSerializer
+from client.serializers import CategorySerializer, ClientSerializer
 from master.models import Category, Master
-from master.serializers import CategorySerializer, MasterSerializer
+from master.serializers import MasterSerializer
 
 
 class CategoriesListView(generics.ListCreateAPIView):
@@ -55,11 +55,11 @@ class ClientDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ClientMasterListView(APIView):
-    def get_object(self, pk):
-        return Client.objects.get(pk=pk)
+    def get_object(self, telegram_id):
+        return Client.objects.get(client_telegram_id=telegram_id)
 
-    def get(self, request, pk):
-        client = self.get_object(pk)
+    def get(self, request, telegram_id):
+        client = self.get_object(telegram_id)
         masters_data = ClientSerializer(client).data['master']
 
         if not masters_data:

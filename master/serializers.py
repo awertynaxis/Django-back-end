@@ -1,14 +1,7 @@
 from rest_framework import serializers
 
 from client.models import Client
-from master.models import Category, Master, Service
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-        read_only_field = ('id',)
+from master.models import Master, Service
 
 
 class ClientSerializer(serializers.ModelSerializer):
