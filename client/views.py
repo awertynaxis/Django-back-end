@@ -48,6 +48,10 @@ class ClientView(generics.ListCreateAPIView):
     filterset_fields = ['master__master_telegram_id', 'client_telegram_id']
 
 
+class ClientRegisterView(generics.CreateAPIView):
+    serializer_class = ClientSerializer
+
+
 # TODO: maybe??
 class ClientDetailsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClientSerializer
