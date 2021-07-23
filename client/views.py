@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from client.models import Client
-from client.serializers import CategorySerializer, ClientSerializer
+from client.serializers import CategorySerializer, ClientSerializer, ClientEditSerializer
 from master.models import Category, Master
 from master.serializers import MasterSerializer
 
@@ -54,6 +54,26 @@ class ClientDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Client.objects.all()
 
 
+class ClientMasterEditView(APIView):
+    def get_object(self, telegram_id):
+        return Client.objects.get(client_telegram_id=telegram_id)
+
+    # implementing GET request handler for easier web API view experience
+    def get(self, request, telegram_id):
+        client = self.get_object(telegram_id)
+        return Response(ClientEditSerializer(client).data)
+
+    def put(self, request, telegram_id):
+        client = self.get_object(telegram_id)
+        # bot sends a JSON with all data about the user, including
+        # new masters list, hence why `data` argument is used
+        client_data = ClientEditSerializer(client, data=request.data)
+        if client_data.is_valid():
+            client_data.save()
+            return Response(client_data.data)
+        return Response(client_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ClientMasterListView(APIView):
     def get_object(self, telegram_id):
         return Client.objects.get(client_telegram_id=telegram_id)
@@ -71,6 +91,7 @@ class ClientMasterListView(APIView):
 
 
 def masters_data_trimmer(masters_data):
+    """Auxiliary function for trimming data about a master to two fields."""
     return [
             {
                 "id": master['id'],
