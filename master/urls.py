@@ -1,10 +1,12 @@
 from django.urls import re_path, path
-
-from .views import list_client_view, list_master_view
+from master.views import signup_user, login_user, logoutuser, \
+    master_skills_list_view, detail_skill_list_view, add_service_view
 
 urlpatterns = [
-    path('clients/', list_client_view, name='client-list'),
-    # re_path(r'^makes/(?P<pk>\d+)$', details_make_view, name='make-details'),
-    path('masters/', list_master_view, name='master-list'),
-    # re_path(r'models/(?P<pk>\d+)', details_model_view, name='model-details'),
+    path('services/', master_skills_list_view, name='skill_list'),
+    path('detail/', detail_skill_list_view, name='detail_skill'),
+    path('addservice/', add_service_view, name='detail_skill'),
+    path('signup/', signup_user, name='signupuser'),
+    path('login/', login_user, name='loginuser'),
+    path('logout/', logoutuser, name='logoutuser'),
 ]
