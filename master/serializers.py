@@ -19,5 +19,5 @@ class DetailSkillSerializer(serializers.ModelSerializer):
 class AddServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = '__all__'
+        exclude = ('master',)
         read_only_field = ('id')

@@ -3,7 +3,10 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView
+from rest_framework.response import Response
+
 from master.filters import SkillsFilter, DetailSkillFilter
 from master.models import Master, Service
 from master.serializers import MasterSkillsSerializer, DetailSkillSerializer, \
@@ -66,6 +69,18 @@ class DetailSkillView(ListAPIView):
 class AddServiceView(CreateAPIView):
     model = Service
     serializer_class = AddServiceSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        user = self.request.user.id
+        master = Master.objects.get(user=user)
+        serializer.save(master=master)
 
 
 master_skills_list_view = MasterSkillsListView.as_view()
