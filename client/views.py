@@ -58,6 +58,18 @@ class ClientDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Client.objects.all()
 
 
+class ClientMasterGetID(APIView):
+    def get(self, request):
+        master_nickname = request.data['nickname']
+        try:
+            master = Master.objects.get(nickname=master_nickname)
+        # returns an empty JSON in case no matching master is found
+        except:
+            return Response({})
+        id = MasterSerializer(master).data['id']
+        return Response(id)
+
+
 class ClientMasterEditView(APIView):
     def get_object(self, telegram_id):
         return Client.objects.get(client_telegram_id=telegram_id)
