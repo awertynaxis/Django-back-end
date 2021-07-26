@@ -20,4 +20,18 @@ class AddServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         exclude = ('master',)
-        read_only_field = ('id')
+        read_only_field = ('id',)
+
+
+class CreateMasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Master
+        exclude = ('user', 'master_telegram_id', 'master_telegram_nickname',)
+        read_only_field = ('id',)
+
+
+class AddMasterTelegramInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Master
+        fields = ('master_telegram_id', 'master_telegram_nickname')
+        read_only_field = ('id',)
