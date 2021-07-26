@@ -32,11 +32,21 @@ class ScheduleEdit(APIView):
         except Schedule.DoesNotExist:
             raise Http404
 
-    def put(self, request):
+    def post(self, request):
         schedule_data = ScheduleSerializer(data=request.data, many=True)
         if schedule_data.is_valid():
             schedule_data.save()
             return Response(schedule_data.data)
+        return Response(schedule_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # for editing a single slot
+    def patch(self, request):
+        slot = self.get_object(request.data['id'])
+        serializer = ScheduleSerializer(slot, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # accepts a {'id'=___} JSON
     def delete(self, request):
