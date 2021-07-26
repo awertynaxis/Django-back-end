@@ -32,6 +32,9 @@ class ScheduleEdit(APIView):
         except Schedule.DoesNotExist:
             raise Http404
 
+    # TODO: right now POST request accepts full JSONs -- maybe it should accept
+    #  `start date`, `end date`, `start time` and `end time` parameters
+    #  so that full JSONs get created on back-end?
     def post(self, request):
         schedule_data = ScheduleSerializer(data=request.data, many=True)
         if schedule_data.is_valid():
