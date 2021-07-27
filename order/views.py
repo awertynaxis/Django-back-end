@@ -34,4 +34,3 @@ list_order_view = OrderListView.as_view()
 detail_order_view = OrderDetailView.as_view()
 create_order_view = OrderCreateView.as_view()
 list_order_master_view = OrderMasterListView.as_view()
-# Create your views here.
