@@ -10,3 +10,16 @@ class Schedule(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+class SortedSchedule(models.Model):
+    master = models.ForeignKey(Master, on_delete=models.DO_NOTHING, related_name='sorted_schedule')
+    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=True, blank=True,
+                              related_name='sorted_schedule_order')
+    datetime_slot = models.DateTimeField()
+
+    class Meta:
+        managed = False
+
+    def __str__(self):
+        return str(self.id)

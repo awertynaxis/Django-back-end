@@ -4,7 +4,7 @@ from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from schedule.models import Schedule
+from schedule.models import Schedule, SortedSchedule
 from schedule.serializers import ScheduleSerializer
 
 
@@ -17,12 +17,11 @@ class ScheduleList(generics.ListCreateAPIView):
 class ScheduleMasterList(generics.ListAPIView):
     serializer_class = ScheduleSerializer
 
-    # TODO: refactor this into using DB views
     def get_queryset(self):
         # taking keyword argument from address
         master = self.kwargs['master_id']
         # filtering all slots by master's ID
-        return Schedule.objects.filter(master_id=master)
+        return SortedSchedule.objects.filter(master_id=master)
 
 
 class ScheduleEdit(APIView):
@@ -32,9 +31,7 @@ class ScheduleEdit(APIView):
         except Schedule.DoesNotExist:
             raise Http404
 
-    # TODO: right now POST request accepts full JSONs -- maybe it should accept
-    #  `start date`, `end date`, `start time` and `end time` parameters
-    #  so that full JSONs get created on back-end?
+    # POST request accepts full JSONs
     def post(self, request):
         schedule_data = ScheduleSerializer(data=request.data, many=True)
         if schedule_data.is_valid():
