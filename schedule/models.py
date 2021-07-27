@@ -13,9 +13,8 @@ class Schedule(models.Model):
 
 
 class SortedSchedule(models.Model):
+    external_id = models.BigIntegerField()
     master = models.ForeignKey(Master, on_delete=models.DO_NOTHING, related_name='sorted_schedule')
-    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=True, blank=True,
-                              related_name='sorted_schedule_order')
     datetime_slot = models.DateTimeField()
 
     class Meta:

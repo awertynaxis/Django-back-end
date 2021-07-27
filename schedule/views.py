@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from schedule.models import Schedule, SortedSchedule
-from schedule.serializers import ScheduleSerializer
+from schedule.serializers import ScheduleSerializer, SortedScheduleSerializer
 
 
 # this view is here for debug purposes and isn't used by any clients
@@ -15,7 +15,7 @@ class ScheduleList(generics.ListCreateAPIView):
 
 
 class ScheduleMasterList(generics.ListAPIView):
-    serializer_class = ScheduleSerializer
+    serializer_class = SortedScheduleSerializer
 
     def get_queryset(self):
         # taking keyword argument from address
