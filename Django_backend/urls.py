@@ -23,5 +23,5 @@ urlpatterns = [
     path('master/', include('master.urls')),
     path('client/', include('client.urls')),
     # path('order/', include('order.urls')),
-    # path('schedule/', include('schedule.urls')),
+    path('schedule/', include('schedule.urls')),
 ]
