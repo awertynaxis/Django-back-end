@@ -5,7 +5,7 @@ from master.models import Master, Service
 class MasterSkillsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ('id', 'title', 'master')
+        fields = ('id', 'title',)
         read_only_field = ('id',)
 
 
