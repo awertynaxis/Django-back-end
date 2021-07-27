@@ -2,6 +2,13 @@ from rest_framework import serializers
 from master.models import Master, Service
 
 
+class MasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Master
+        fields = '__all__'
+        read_only_field = ('id',)
+
+
 class MasterSkillsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
