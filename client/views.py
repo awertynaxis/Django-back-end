@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, status
+from rest_framework import generics, mixins, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -48,8 +48,23 @@ class ClientView(generics.ListCreateAPIView):
     filterset_fields = ['master__master_telegram_id', 'client_telegram_id']
 
 
-class ClientRegisterView(generics.CreateAPIView):
+class ClientRegisterView(mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = ClientSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = ClientSerializer(data=request.data)
+        serializer.is_valid()
+        # `get_or_create` method returns a tuple, hence why 2 variables are used
+        # this method calls a `get` method with keyword arguments provided in this function call,
+        # checks whether this DB entry exists and if not it creates one,
+        # preventing creation of duplicate client DB entries
+        obj, created = Client.objects.get_or_create(client_telegram_id=request.data['client_telegram_id'],
+                                                    client_telegram_nickname=request.data['client_telegram_nickname'],
+                                                    defaults=serializer.validated_data)
+        if created:
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_409_CONFLICT)
 
 
 # TODO: maybe??
@@ -79,7 +94,7 @@ class ClientMasterEditView(APIView):
         client = self.get_object(telegram_id)
         return Response(ClientEditSerializer(client).data)
 
-    def put(self, request, telegram_id):
+    def patch(self, request, telegram_id):
         client = self.get_object(telegram_id)
         # bot sends a JSON with all data about the user, including
         # new masters list, hence why `data` argument is used
