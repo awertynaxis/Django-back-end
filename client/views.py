@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.db.models import Model
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, mixins, status
 from rest_framework.views import APIView
@@ -11,11 +11,13 @@ from master.serializers import MasterSerializer
 
 
 class CategoriesListView(generics.ListCreateAPIView):
+    """Gives a list of categories."""
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
 
 class MastersByCategoriesView(APIView):
+    """Gives a list of IDs and nicknames of masters who provide services in the selected `category`."""
     def get_masters(self, category):
         # getting entries of all masters who provide services
         # that belong in the requested category
@@ -42,13 +44,16 @@ class MastersByCategoriesView(APIView):
 
 
 class ClientView(generics.ListCreateAPIView):
+    """Gives a list of clients and their info."""
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
+    # TODO: is this necessary?
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['master__master_telegram_id', 'client_telegram_id']
 
 
 class ClientRegisterView(mixins.CreateModelMixin, generics.GenericAPIView):
+    """Registers client in the database. Used when bot receives a `/start` command."""
     serializer_class = ClientSerializer
 
     def post(self, request, *args, **kwargs):
@@ -66,26 +71,34 @@ class ClientRegisterView(mixins.CreateModelMixin, generics.GenericAPIView):
         else:
             return Response(status=status.HTTP_409_CONFLICT)
 
+    # TODO: PATCH request when user registers properly (sends their TG contact to the bot)
 
-# TODO: maybe??
+
+# TODO: remove from release version?
 class ClientDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    """Gives detailed info of a specified client.
+    Used for debug purposes only."""
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
 
 
+# TODO: move this to `master` app?
 class ClientMasterGetID(APIView):
+    """Gives ID of a master with a specified nickname. Receives a {"nickname": '____'} JSON as a request."""
     def get(self, request):
         master_nickname = request.data['nickname']
         try:
             master = Master.objects.get(nickname=master_nickname)
         # returns an empty JSON in case no matching master is found
-        except:
+        except Model.DoesNotExist:
             return Response({})
         id = MasterSerializer(master).data['id']
         return Response(id)
 
 
+# TODO: merge with ClientDetailsView?
 class ClientMasterEditView(APIView):
+    """Edits client's info. Used when client edits their list of saved masters."""
     def get_object(self, telegram_id):
         return Client.objects.get(client_telegram_id=telegram_id)
 
@@ -95,8 +108,9 @@ class ClientMasterEditView(APIView):
         return Response(ClientEditSerializer(client).data)
 
     def patch(self, request, telegram_id):
+        """Can be used for both adding and deleting masters from user's list of saved masters."""
         client = self.get_object(telegram_id)
-        # bot sends a JSON with all data about the user, including
+        # bot sends a JSON with all data about the user (stored in `request`), including
         # new masters list, hence why `data` argument is used
         client_data = ClientEditSerializer(client, data=request.data)
         if client_data.is_valid():
@@ -106,6 +120,7 @@ class ClientMasterEditView(APIView):
 
 
 class ClientMasterListView(APIView):
+    """Gets a list of ID's and nicknames of masters that a specified (by `telegram_id`) client has."""
     def get_object(self, telegram_id):
         return Client.objects.get(client_telegram_id=telegram_id)
 
