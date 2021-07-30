@@ -24,7 +24,7 @@ def signup_user(request):
             try:
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
                 user.save()
-                login(request, user) # there should be redirect to master's cabinet
+                login(request, user) # there should be redirect to master's cabinet # TODO delete this comment in future
                 return redirect('loginuser')
             except IntegrityError:
                 return render(request, 'master/signupuser.html', {'form': UserCreationForm(), 'error': 'That username has already been taken'})
