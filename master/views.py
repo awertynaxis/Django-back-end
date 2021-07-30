@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from master import handlers
@@ -22,14 +22,17 @@ def signup_user(request):
     else:
         if request.POST['password1'] == request.POST['password2']:
             try:
-                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
+                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'],
+                                                email=request.POST['email'])
                 user.save()
                 login(request, user) # there should be redirect to master's cabinet # TODO delete this comment in future
                 return redirect('loginuser')
             except IntegrityError:
-                return render(request, 'master/signupuser.html', {'form': UserCreationForm(), 'error': 'That username has already been taken'})
+                return render(request, 'master/signupuser.html', {'form': UserCreationForm(),
+                                                                  'error': 'That username has already been taken'})
         else:
-            return render(request, 'master/signupuser.html', {'form': UserCreationForm(), 'error': 'Passwords did not match'})
+            return render(request, 'master/signupuser.html', {'form': UserCreationForm(),
+                                                              'error': 'Passwords did not match'})
 
 
 def login_user(request):
@@ -38,7 +41,8 @@ def login_user(request):
     else:
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
         if not user:
-            return render(request, 'master/loginuser.html', {'form': AuthenticationForm(), 'error': 'Username and password did not match'})
+            return render(request, 'master/loginuser.html', {'form': AuthenticationForm(),
+                                                             'error': 'Username and password did not match'})
         else:
             login(request, user)
             # return redirect('currenttodos') # there should be redirect to master's cabinet
@@ -53,7 +57,8 @@ def logoutuser(request):
 
 # Show master skills
 class MasterSkillsListView(ListAPIView):
-    """Returns a list of master skills"""
+    """Returns a list of masters' services.
+    Implemented for debug purposes only and isn't used by any clients."""
     model = Service
     queryset = Service.objects.all()
     serializer_class = MasterSkillsSerializer
@@ -61,8 +66,8 @@ class MasterSkillsListView(ListAPIView):
 
 
 # Show detail skill information
-class DetailSkillView(ListAPIView):
-    """Returns detail service information"""
+class DetailedSkillView(ListAPIView):
+    """Returns a list of detailed information of masters' services."""
     model = Service
     queryset = Service.objects.all()
     serializer_class = DetailSkillSerializer
@@ -71,7 +76,7 @@ class DetailSkillView(ListAPIView):
 
 # Add new service
 class AddServiceView(CreateAPIView):
-    """Gives a possibility to create new service"""
+    """Creates a new service."""
     model = Service
     serializer_class = AddServiceSerializer
 
@@ -89,7 +94,7 @@ class AddServiceView(CreateAPIView):
 
 
 class CreateMasterView(CreateAPIView):
-    """Gives a possibility to create a Master instance and link it to an User instance implicitly"""
+    """Creates a Master instance and links it to a User instance implicitly."""
     model = Master
     serializer_class = CreateMasterSerializer
 
@@ -109,11 +114,12 @@ class CreateMasterView(CreateAPIView):
 
 
 class AddMasterTelegramInfoView(UpdateAPIView):
-    """Gives possibility to link Master instance with telegram account information"""
+    """Links Master instance with Telegram account information."""
     model = Master
     serializer_class = AddMasterTelegramInfoSerializer
 
     def update(self, request, *args, **kwargs):
+        # TODO: describe what's going on on the next line, just in case
         partial = kwargs.pop('partial', False)
         master_id = get_user_id_if_approve(request.data)
         instance = Master.objects.get(id=master_id)
@@ -130,8 +136,9 @@ class AddMasterTelegramInfoView(UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
 
-master_skills_list_view = MasterSkillsListView.as_view()
-detail_skill_list_view = DetailSkillView.as_view()
-add_service_view = AddServiceView.as_view()
-create_master_view = CreateMasterView.as_view()
-add_master_telegram_info_view = AddMasterTelegramInfoView.as_view()
+# TODO: remove this and use ViewName.as_view() in urls.py?
+# master_skills_list_view = MasterSkillsListView.as_view()
+# detail_skill_list_view = DetailSkillView.as_view()
+# add_service_view = AddServiceView.as_view()
+# create_master_view = CreateMasterView.as_view()
+# add_master_telegram_info_view = AddMasterTelegramInfoView.as_view()
