@@ -36,14 +36,15 @@ class OrderSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        exclude = ('client', )
         read_only_field = ('id', )
 
 
 class ServiceMasterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ('title', 'price','duration')
+        fields = ('title', 'price', 'duration')
+
 
 
 class OrderForMasterSerializer(serializers.ModelSerializer):
