@@ -4,6 +4,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 
 from client.models import Client
+from master.models import Service
 from order.models import Order
 from order.serializers import OrderSerializer, CreateOrderSerializer, OrderForMasterSerializer
 from order.filters import OrderClientFilter, OrderMasterFilter
@@ -47,7 +48,7 @@ class OrderCreateView(generics.CreateAPIView):
     def schedule_update(self, order: str) -> None:
         """Updates corresponding schedule slots with the order booked on these slots."""
         # all these fields are present in a JSON sent to the endpoint
-        duration = self.request.data['duration']
+        duration = Service.objects.get(pk=self.request.data['service']).duration
         master = self.request.data['master']
         start_slot = parse_datetime(self.request.data['start_datetime_slot'])
 
