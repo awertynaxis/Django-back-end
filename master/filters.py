@@ -3,11 +3,11 @@ from master.models import Service
 
 
 class SkillsFilter(filters.FilterSet):
-    nickname = filters.CharFilter(field_name="master__nickname", lookup_expr='exact')
+    master_id = filters.CharFilter(field_name="master__id", lookup_expr='exact')
 
     class Meta:
         model = Service
-        fields = ['nickname']
+        fields = ['master_id']
 
 
 class DetailSkillFilter(filters.FilterSet):
