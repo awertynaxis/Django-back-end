@@ -1,4 +1,3 @@
-from django.db.models import Model
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, mixins, status
 from rest_framework.views import APIView
@@ -29,7 +28,7 @@ class MastersByCategoriesView(APIView):
         serialized_masters = MasterSerializer(masters, many=True).data
 
         if not serialized_masters:
-            return Response(status.HTTP_204_NO_CONTENT)
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
 
         # removing duplicate masters data using frozenset
         # via assigning a value to key as a frozenset
@@ -40,7 +39,7 @@ class MastersByCategoriesView(APIView):
 
         # TODO: try to implement filter here
         result_list = masters_data_trimmer(masters_data)
-        return Response(result_list)
+        return Response(result_list, status=status.HTTP_200_OK)
 
 
 class ClientView(generics.ListCreateAPIView):
@@ -90,10 +89,10 @@ class ClientMasterGetID(APIView):
         try:
             master = Master.objects.get(nickname=master_nickname)
         # returns an empty JSON in case no matching master is found
-        except Model.DoesNotExist:
-            return Response({})
+        except Master.DoesNotExist:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
         id = MasterSerializer(master).data['id']
-        return Response(id)
+        return Response(id, status=status.HTTP_200_OK)
 
 
 # TODO: merge with ClientDetailsView?
