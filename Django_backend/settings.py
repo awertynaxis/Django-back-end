@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,11 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    #myown
-    'master',
-    'order',
-    'client',
-    'schedule'
+
+    # project's apps
+    'master.apps.MasterConfig',
+    'order.apps.OrderConfig',
+    'client.apps.ClientConfig',
+    'schedule.apps.ScheduleConfig'
 ]
 
 MIDDLEWARE = [
@@ -80,6 +82,30 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     )
+}
+
+CELERY_ALWAYS_EAGER = False
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json', 'pickle']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_ENABLE_UTC = True
+CELERY_MAX_TASKS_PER_CHILD = 10
+CELERY_TASK_CREATE_MISSING_QUEUES = True
+CELERY_IMPORTS = [
+    'schedule.tasks',
+]
+
+CELERYBEAT_SCHEDULE = {
+    # 'archive-slots': {
+    #     'task': 'schedule.archive_old_slots',
+    #     'schedule': timedelta(minutes=1),
+    # },
+    'test_task': {
+        'task': 'schedule.archive_slots',
+        'schedule': timedelta(seconds=10),
+    },
 }
 
 
