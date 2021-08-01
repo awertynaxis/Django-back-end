@@ -36,7 +36,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        exclude = ('client', )
+        exclude = ('client',)
         read_only_field = ('id', )
 
 
