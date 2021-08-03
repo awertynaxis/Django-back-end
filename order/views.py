@@ -8,7 +8,7 @@ from master.models import Service
 from order.models import Order
 from order.serializers import OrderSerializer, CreateOrderSerializer, OrderForMasterSerializer
 from order.filters import OrderClientFilter, OrderMasterFilter
-from schedule.models import Schedule
+from schedule.models import Schedule, SortedSchedule
 
 
 class OrderListView(generics.ListCreateAPIView):

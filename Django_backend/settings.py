@@ -84,29 +84,27 @@ REST_FRAMEWORK = {
     )
 }
 
-CELERY_ALWAYS_EAGER = False
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json', 'pickle']
+# REDIS related settings
+REDIS_HOST = '0.0.0.0'
+REDIS_PORT = '6379'
+# CELERY_ALWAYS_EAGER = False
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
-CELERY_ENABLE_UTC = True
-CELERY_MAX_TASKS_PER_CHILD = 10
-CELERY_TASK_CREATE_MISSING_QUEUES = True
-CELERY_IMPORTS = [
-    'schedule.tasks',
-]
 
-CELERYBEAT_SCHEDULE = {
-    # 'archive-slots': {
-    #     'task': 'schedule.archive_old_slots',
-    #     'schedule': timedelta(minutes=1),
-    # },
-    'test_task': {
-        'task': 'schedule.archive_slots',
-        'schedule': timedelta(seconds=10),
-    },
-}
+# CELERYBEAT_SCHEDULE = {
+#     # 'archive-slots': {
+#     #     'task': 'schedule.archive_old_slots',
+#     #     'schedule': timedelta(minutes=1),
+#     # },
+#     'test_task': {
+#         'task': 'schedule.archive_slots',
+#         'schedule': timedelta(seconds=10),
+#     },
+# }
 
 
 WSGI_APPLICATION = 'Django_backend.wsgi.application'

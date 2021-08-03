@@ -1,21 +1,17 @@
 import datetime
 import logging
+from sys import stdout
 from typing import List
 
-from celery import shared_task
-
-from schedule.models import Schedule, ArchiveSchedule
-
+from Django_backend.celery import app
 
 logger = logging.getLogger()
+logger.addHandler(logging.StreamHandler(stdout))
 
 
-@shared_task(
-    name='schedule.archive_old_slots',
-    # queue='schedule',
-    soft_time_limit=60,
-)
+@app.task
 def archive_old_schedule_slots() -> None:
+    from schedule.models import Schedule, ArchiveSchedule
     start_time = datetime.datetime.now()
     old_slots = Schedule.objects.filter(datetime_slot__lt=start_time)
     logging.info(f'{len(old_slots)} old slots found.')
@@ -29,8 +25,7 @@ def archive_old_schedule_slots() -> None:
     logging.info(f'{len(old_slots)} old slots deleted.')
 
 
-@shared_task(
-    name='schedule.archive_slots',
-)
-def test_print() -> None:
+@app.task
+def test_print():
+    print('а я не живая!')
     logger.info('а я живая!')
