@@ -4,10 +4,11 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 
 from client.models import Client
+from master.models import Service
 from order.models import Order
 from order.serializers import OrderSerializer, CreateOrderSerializer, OrderForMasterSerializer
 from order.filters import OrderClientFilter, OrderMasterFilter
-from schedule.models import Schedule
+from schedule.models import Schedule, SortedSchedule
 
 
 class OrderListView(generics.ListCreateAPIView):
@@ -19,12 +20,28 @@ class OrderListView(generics.ListCreateAPIView):
 
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """Gives detailed info of a specified order."""
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        queryset = Order.objects.all()
+        return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        order = self.get_object()
+        self.release_schedule_slots(order)
+        self.perform_destroy(order)
+        return Response(status=status.HTTP_200_OK)
+
+    def release_schedule_slots(self, order):
+        order = self.get_object()
+        schedule_slots = Schedule.objects.filter(order=order).all()
+        for slot in schedule_slots:
+            slot.order_id = None
+        Schedule.objects.bulk_update(schedule_slots, ['order_id'])
 
 
 class OrderCreateView(generics.CreateAPIView):
+
     """Creates an order and ties it to corresponding schedule slots."""
     model = Order
     serializer_class = CreateOrderSerializer
@@ -46,7 +63,7 @@ class OrderCreateView(generics.CreateAPIView):
     def schedule_update(self, order: str) -> None:
         """Updates corresponding schedule slots with the order booked on these slots."""
         # all these fields are present in a JSON sent to the endpoint
-        duration = self.request.data['duration']
+        duration = Service.objects.get(pk=self.request.data['service']).duration
         master = self.request.data['master']
         start_slot = parse_datetime(self.request.data['start_datetime_slot'])
 

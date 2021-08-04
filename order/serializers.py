@@ -46,7 +46,6 @@ class ServiceMasterSerializer(serializers.ModelSerializer):
         fields = ('title', 'price', 'duration')
 
 
-
 class OrderForMasterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order

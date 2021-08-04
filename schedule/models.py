@@ -5,7 +5,7 @@ from order.models import Order
 
 class Schedule(models.Model):
     master = models.ForeignKey(Master, on_delete=models.CASCADE, related_name='schedule')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, related_name='order')
+    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='order')
     datetime_slot = models.DateTimeField()
 
     def __str__(self):
@@ -19,6 +19,17 @@ class SortedSchedule(models.Model):
 
     class Meta:
         managed = False
+
+    def __str__(self):
+        return str(self.id)
+
+
+# used for archivation celery task
+class ArchiveSchedule(models.Model):
+    external_id = models.BigIntegerField()
+    master = models.ForeignKey(Master, on_delete=models.DO_NOTHING)
+    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=True, blank=True)
+    datetime_slot = models.DateTimeField()
 
     def __str__(self):
         return str(self.id)
