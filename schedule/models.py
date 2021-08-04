@@ -22,3 +22,14 @@ class SortedSchedule(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+# used for archivation celery task
+class ArchiveSchedule(models.Model):
+    external_id = models.BigIntegerField()
+    master = models.ForeignKey(Master, on_delete=models.DO_NOTHING)
+    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=True, blank=True)
+    datetime_slot = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.id)

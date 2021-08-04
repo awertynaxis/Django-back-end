@@ -28,7 +28,7 @@ class MastersByCategoriesView(APIView):
         serialized_masters = MasterSerializer(masters, many=True).data
 
         if not serialized_masters:
-            return Response({}, status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         # removing duplicate masters data using frozenset
         # via assigning a value to key as a frozenset
