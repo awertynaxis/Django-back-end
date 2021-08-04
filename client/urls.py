@@ -1,16 +1,15 @@
 from django.urls import re_path, path
 
-from client.views import list_client_view, details_client_view, \
-    ClientRegisterView, ClientMasterListView, ClientMasterEditView, CategoriesListView, MastersByCategoriesView, \
-    ClientMasterGetID
+from client.views import ClientView, ClientDetailsView, ClientRegisterView, ClientMasterListView, ClientMasterEditView,\
+    CategoriesListView, MastersByCategoriesView, ClientMasterGetID
 
 urlpatterns = [
-    path('clients/', list_client_view, name='client-list'),
-    re_path(r'^clients/(?P<pk>\d+)$', details_client_view, name='client-details'),
-    path('clients/register/', ClientRegisterView.as_view()),
-    path('clients/add_master/<telegram_id>', ClientMasterEditView.as_view()),
-    path('clients/add_master/get_id/', ClientMasterGetID.as_view()),
-    path('clients/master_list/<telegram_id>/', ClientMasterListView.as_view()),
-    path('categories/', CategoriesListView.as_view()),
-    path('categories/<category>', MastersByCategoriesView.as_view())
+    path('categories/', CategoriesListView.as_view(), name='categories_list'),
+    path('categories/<category>', MastersByCategoriesView.as_view(), name='masters_by_categories'),
+    path('clients/', ClientView.as_view(), name='client-list'),
+    re_path(r'^clients/(?P<pk>\d+)$', ClientDetailsView.as_view(), name='client-details'),
+    path('register/', ClientRegisterView.as_view(), name='client_register'),
+    path('add_master/<telegram_id>', ClientMasterEditView.as_view(), name='client-master-edit'),
+    path('add_master/get_id/', ClientMasterGetID.as_view(), name='client-master-get-id'),
+    path('master_list/<telegram_id>', ClientMasterListView.as_view(), name='client-master-list'),
 ]
