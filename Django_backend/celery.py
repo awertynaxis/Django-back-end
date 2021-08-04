@@ -18,8 +18,12 @@ app.autodiscover_tasks()
 #     app.start()
 
 app.conf.beat_schedule = {
-    'test_print': {
-        'task': 'schedule.tasks.test_print',
-        'schedule': timedelta(seconds=5),
+    # 'test_print': {
+    #     'task': 'schedule.tasks.test_print',
+    #     'schedule': timedelta(seconds=5),
+    # },
+    'archive-old-slots': {
+        'task': 'schedule.tasks.archive_old_schedule_slots',
+        'schedule': crontab(minute='*/1'),
     },
 }
