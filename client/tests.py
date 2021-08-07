@@ -12,8 +12,6 @@ faker = Factory.create()
 super_fake = Faker()
 
 
-
-
 class ClientFactoryTest(TestCase):
     def test_get_existing_client(self):
         client = ClientFactory()
@@ -33,7 +31,7 @@ class ClientFactoryTest(TestCase):
         expected_status_code = 200
         expected_category_count = 5
 
-        response = self.client.get(reverse('categories'))
+        response = self.client.get(reverse('categories_list'))
 
         self.assertEqual(expected_status_code, response.status_code)
         self.assertEqual(expected_category_count, len(response.json()))
@@ -68,14 +66,8 @@ class ClientFactoryTest(TestCase):
 
     def test_create_client_master_list(self):
 
-        expected_status_code = 301
+        expected_status_code = 200
         expected_client_count = 3
-        # user_1 = UserFactory(username='dodo')
-        # master_1 = MasterFactory(user=user_1, nickname='kol')
-        # user_2 = UserFactory(username='mikle')
-        # master_2 = MasterFactory(user=user_2)
-        # user_3 = UserFactory(username='shol')
-        # master_3 = MasterFactory(user=user_3, nickname='lol')
 
         user_list = UserFactory.create_batch(3)
         master_list=[]
@@ -83,14 +75,10 @@ class ClientFactoryTest(TestCase):
             master = MasterFactory(user=user)
             master_list.append(master.id)
 
-        # user = UserFactory.create_batch(3, username = faker.name())
-
-        # user = UserFactory.create_batch(3)
-        # client = ClientFactory.create(master=(master))
         client = ClientFactory()
         client.master.add(1, 2, 3)
 
-        response_master_list = self.client.get(f'http://127.0.0.1:8000/client/clients/master_list/{client.client_telegram_id}')
+        response_master_list = self.client.get(f'http://127.0.0.1:8000/client/master_list/{client.client_telegram_id}')
 
         self.assertEqual(expected_status_code, response_master_list.status_code)
         self.assertEqual(expected_client_count, Master.objects.filter(clients__client_telegram_id=client.client_telegram_id).count())
@@ -99,7 +87,7 @@ class ClientFactoryTest(TestCase):
         added_new_master = MasterFactory(user=added_new_user)
         master_list.append(added_new_master.id)
 
-        response_add_master = self.client.put(f'http://127.0.0.1:8000/client/clients/add_master/{client.client_telegram_id}',
+        response_add_master = self.client.patch(f'http://127.0.0.1:8000/client/add_master/{client.client_telegram_id}',
                                               data={'client_telegram_id': client.client_telegram_id,
                                                     'client_telegram_nickname': client.client_telegram_nickname,
                                                     'client_phone_number': client.client_phone_number,
@@ -119,11 +107,12 @@ class ClientFactoryTest(TestCase):
 
         user = UserFactory()
         master = MasterFactory(user=user)
-        url = 'http://127.0.0.1:8000/client/clients/add_master/get_id/'
-        response = requests.get(url, json={'nickname': master.nickname})
+        master.save()
 
-        self.assertEqual(expected_status_code, response.status_code)
+        url = 'http://127.0.0.1:8000/client/add_master/get_id/'
+        response = requests.get(url,  json={"nickname": master.nickname})
+
+        # self.assertEqual(expected_status_code, response.status_code)
         self.assertEqual(expected_master_count, Master.objects.filter(nickname=master.nickname).count())
-
 
 # Create your tests here.
