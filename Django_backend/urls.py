@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from rest_framework.schemas import get_schema_view
+from rest_framework_swagger.views import get_swagger_view
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+swagger_view = get_schema_view(title='Django_backend API')
+schema_view = get_swagger_view(title=' Django_backend API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +31,7 @@ urlpatterns = [
     path('client/', include('client.urls')),
     path('order/', include('order.urls')),
     path('schedule/', include('schedule.urls')),
+    path('docs/', swagger_view),
+    path('superswagger/', schema_view),
+    path('sentry-debug/', trigger_error),
 ]

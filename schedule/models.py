@@ -1,6 +1,6 @@
 from django.db import models
 from master.models import Master
-from order.models import Order
+from order.models import Order, ArchiveOrder
 
 
 class Schedule(models.Model):
@@ -28,7 +28,7 @@ class SortedSchedule(models.Model):
 class ArchiveSchedule(models.Model):
     external_id = models.BigIntegerField()
     master = models.ForeignKey(Master, on_delete=models.DO_NOTHING)
-    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING, null=True, blank=True)
+    order = models.ForeignKey(ArchiveOrder, on_delete=models.DO_NOTHING, null=True, blank=True)
     datetime_slot = models.DateTimeField()
 
     def __str__(self):

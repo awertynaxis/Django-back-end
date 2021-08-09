@@ -63,7 +63,7 @@ class ClientFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Client
 
-    client_telegram_id = random.randint(10000000,100000000000000)
+    client_telegram_id = factory.LazyFunction(faker.pyint)
     client_telegram_nickname = faker.word()
     client_phone_number = faker.word()
 
