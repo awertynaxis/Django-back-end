@@ -1,0 +1,39 @@
+version: "3.3"
+
+services:
+  backend:
+    container_name: backend_container
+    build: .
+    network_mode: host
+    ports:
+      - '8000:8000'
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    container_name: pg_container
+    image: postgres
+    network_mode: host
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdatabase
+    ports:
+      - '5432:5432'
+    volumes:
+      - "/var/lib/postgresql/13/main:/var/lib/postgresql/13/main:rw"
+  redis:
+    container_name: redis_container
+    image: redis
+    network_mode: host
+    ports:
+      - '6379:6379'
+  tgbot:
+    container_name: tgbot_container
+    depends_on:
+      - backend
+    image: localhost:5000/tgbot:latest
+    network_mode: host
+#volumes:
+#  pg_data:
+

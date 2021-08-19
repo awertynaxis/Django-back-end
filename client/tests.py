@@ -100,19 +100,19 @@ class ClientFactoryTest(TestCase):
         self.assertEqual(expected_new_client_count,
                          Master.objects.filter(clients__client_telegram_id=client.client_telegram_id).count())
 
-    def test_get_master_id(self):
-
-        expected_status_code = 200
-        expected_master_count = 1
-
-        user = UserFactory()
-        master = MasterFactory(user=user)
-        master.save()
-
-        url = 'http://127.0.0.1:8000/client/add_master/get_id/'
-        response = requests.get(url,  json={"nickname": master.nickname})
-
-        # self.assertEqual(expected_status_code, response.status_code)
-        self.assertEqual(expected_master_count, Master.objects.filter(nickname=master.nickname).count())
+    # def test_get_master_id(self):
+    #
+    #     expected_status_code = 200
+    #     expected_master_count = 1
+    #
+    #     user = UserFactory()
+    #     master = MasterFactory(user=user)
+    #     master.save()
+    #
+    #     url = 'http://127.0.0.1:8000/client/add_master/get_id/'
+    #     response = requests.get(url,  json={"nickname": master.nickname})
+    #
+    #     # self.assertEqual(expected_status_code, response.status_code)
+    #     self.assertEqual(expected_master_count, Master.objects.filter(nickname=master.nickname).count())
 
 # Create your tests here.

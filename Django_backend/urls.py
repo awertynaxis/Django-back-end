@@ -19,8 +19,10 @@ from django.urls import path, include, re_path
 from rest_framework.schemas import get_schema_view
 from rest_framework_swagger.views import get_swagger_view
 
+
 def trigger_error(request):
     division_by_zero = 1 / 0
+
 
 swagger_view = get_schema_view(title='Django_backend API')
 schema_view = get_swagger_view(title=' Django_backend API')

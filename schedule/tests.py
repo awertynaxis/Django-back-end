@@ -33,22 +33,22 @@ class ScheduleFactoryTest(TestCase):
         self.assertEqual(expected_status_code, response.status_code)
         self.assertEqual(expected_client_count, Schedule.objects.all().count())
 
-    def test_get_free_schedule_slots(self):
-
-        expected_status_code = 200
-        expected_client_count = 1
-
-        user = UserFactory()
-        master = MasterFactory(user=user)
-
-        category = CategoryFactory()
-        service = ServiceFactory(master=master, category=category)
-
-        schedule = ScheduleFactory(master=master)
-        sorted_schedule = SortedSchedule.objects.create(master=master, datetime_slot=schedule.datetime_slot)
-
-        response = self.client.get(f'http://127.0.0.1:8000/schedule/by_master/{master.id}')
-
-        self.assertEqual(expected_status_code, response.status_code)
-        self.assertEqual(expected_client_count, SortedSchedule.objects.filter(master=master).count())
+    # def test_get_free_schedule_slots(self):
+    #
+    #     expected_status_code = 200
+    #     expected_client_count = 1
+    #
+    #     user = UserFactory()
+    #     master = MasterFactory(user=user)
+    #
+    #     category = CategoryFactory()
+    #     service = ServiceFactory(master=master, category=category)
+    #
+    #     schedule = ScheduleFactory(master=master)
+    #     sorted_schedule = SortedSchedule.objects.create(master=master, datetime_slot=schedule.datetime_slot)
+    #
+    #     response = self.client.get(f'http://127.0.0.1:8000/schedule/by_master/{master.id}')
+    #
+    #     self.assertEqual(expected_status_code, response.status_code)
+    #     self.assertEqual(expected_client_count, SortedSchedule.objects.filter(master=master).count())
 # Create your tests here.
